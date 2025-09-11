@@ -10,7 +10,7 @@ import (
 	"os"
 	"strings"
 
-	sqirvy "github.com/dmh2000/sqirvy-llmclient"
+	sqirvy "github.com/dmh2000/go-llmclient"
 )
 
 // executeQuery processes and executes an AI model query with the given system prompt and arguments.

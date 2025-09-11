@@ -1,4 +1,4 @@
-module github.com/dmh2000/sqirvy-llmclient
+module github.com/dmh2000/go-llmclient
 
 go 1.24.0
 

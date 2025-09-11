@@ -4,7 +4,7 @@
 // AI model providers.
 package main
 
-import "github.com/dmh2000/sqirvy-llmclient/cmd/sqirvy-cli/cmd"
+import "github.com/dmh2000/go-llmclient/cmd/sqirvy-cli/cmd"
 
 func main() {
 	cmd.Execute()

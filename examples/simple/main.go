@@ -4,9 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/dmh2000/sqirvy-llmclient"
+	sqirvy "github.com/dmh2000/go-llmclient"
 )
 
+// This example is an example of a simple query where the system prompt is provided by the user
 func main() {
 
 	for _, model := range sqirvy.GetModelList() {

@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"sort"
 
-	sqirvy "github.com/dmh2000/sqirvy-llmclient"
+	sqirvy "github.com/dmh2000/go-llmclient"
 
 	"github.com/spf13/cobra"
 )
