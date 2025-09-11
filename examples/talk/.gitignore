@@ -1,0 +1,6 @@
+venv
+out*.wav
+out-*.wav
+astro.txt
+moon.txt
+talk.xml
