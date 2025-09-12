@@ -1,4 +1,3 @@
-```prompt
 # Comprehensive Code Review Guidelines
 
 Conduct a thorough code review examining the following critical categories with detailed analysis:
@@ -6,6 +5,7 @@ Conduct a thorough code review examining the following critical categories with 
 ## Primary Review Categories
 
 ### 1. Bugs and Logic Issues
+
 - Runtime errors, null pointer exceptions, index out of bounds
 - Logic errors that could cause incorrect behavior
 - Infinite loops or recursive calls without proper termination
@@ -15,6 +15,7 @@ Conduct a thorough code review examining the following critical categories with 
 - Edge cases not properly handled (empty inputs, boundary values)
 
 ### 2. Security Vulnerabilities
+
 - Input validation and sanitization issues
 - SQL injection, XSS, or other injection vulnerabilities
 - Authentication and authorization flaws
@@ -26,6 +27,7 @@ Conduct a thorough code review examining the following critical categories with 
 - Dependency vulnerabilities
 
 ### 3. Performance Issues
+
 - Inefficient algorithms (O(n²) when O(n log n) possible)
 - Database query optimization opportunities
 - Memory usage inefficiencies
@@ -36,6 +38,7 @@ Conduct a thorough code review examining the following critical categories with 
 - Missing indexing or caching strategies
 
 ### 4. Code Quality and Design
+
 - SOLID principles adherence
 - Design patterns appropriateness
 - Separation of concerns
@@ -46,6 +49,7 @@ Conduct a thorough code review examining the following critical categories with 
 - Interface design and abstraction levels
 
 ### 5. Style and Language Idioms
+
 - Language-specific best practices and conventions
 - Consistent naming conventions (camelCase, snake_case, etc.)
 - Code formatting and indentation consistency
@@ -57,6 +61,7 @@ Conduct a thorough code review examining the following critical categories with 
 ## Additional Review Criteria
 
 ### Code Maintainability
+
 - Code readability and self-documentation
 - Comment quality and necessity
 - Function and variable naming descriptiveness
@@ -65,6 +70,7 @@ Conduct a thorough code review examining the following critical categories with 
 - Test coverage and quality
 
 ### Architecture and Design
+
 - Modularity and component boundaries
 - Scalability considerations
 - Configuration management
@@ -73,6 +79,7 @@ Conduct a thorough code review examining the following critical categories with 
 - API design quality
 
 ### Best Practices Compliance
+
 - Industry standards adherence
 - Framework-specific guidelines
 - Team coding standards
@@ -109,7 +116,7 @@ Conduct a thorough code review examining the following critical categories with 
     - `filename:line` - Description of bug and potential impact
     - Recommended fix or approach
 
-    ### Security Vulnerabilities (Priority: Critical/High/Medium/Low)  
+    ### Security Vulnerabilities (Priority: Critical/High/Medium/Low)
     - `filename:line` - Security issue description and risk level
     - Mitigation strategy
 
@@ -137,7 +144,7 @@ Conduct a thorough code review examining the following critical categories with 
     1. Most urgent fixes needed
     2. Security vulnerabilities to address
 
-    ### Future Improvements (Medium/Low Priority)  
+    ### Future Improvements (Medium/Low Priority)
     1. Performance optimizations
     2. Code quality enhancements
     3. Architectural considerations
@@ -157,4 +164,3 @@ Conduct a thorough code review examining the following critical categories with 
     - Prioritized action items
     - Timeline recommendations
     ```
-```
