@@ -8,32 +8,32 @@ import (
 )
 
 var system = `You are an expert in ai and large language models who it teaching a junior software developer.
-answer the following questions in one or two paragraphs each.`
+answer the following questions in one or two paragraphs each. the output should be in markdown format. Create a 
+markdown level 2 heading for each prompt. Don't repeat headings from the prompts. don't repeat the prompts.`
 
-var prompt1 = "Describe in one paragraph how the embeddings are generated."
-var prompt2 = "What does the positional encoding phase do to the embeddings"
-var prompt3 = "What does the attention phase do"
-var prompt4 = "What does the feed forward neural network phase do."
+var prompt1 = "\n **HOW ARE THE INITIAL EMBEDDINGS GENERATED?**\n"
+var prompt2 = "\n **WHAT DOES THE POSITIONAL ENCODING PHASE DO TO THE EMBEDDINGS?**\n"
+var prompt3 = "\n **WHAT DOES THE ATTENTION PHASE DO?**\n"
+var prompt4 = "\n **WHAT DOES THE FEED FORWARD NEURAL NETWORK PHASE DO?**\n"
 
 // This is an example of a multi-step query
 func main() {
 
-	for _, model := range sqirvy.GetModelList() {
-		fmt.Println(model)
-	}
-
-	client, err := sqirvy.NewClient("anthropic")
+	provider := "gemini"
+	client, err := sqirvy.NewClient(provider)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+	model := "gemini-2.5-flash"
+	fmt.Printf("Using provider: %s model: %s\n", provider, model)
 
 	var conversation []string
 	var resp string
 
 	// Step 1
 	conversation = append(conversation, prompt1)
-	resp, err = client.QueryText(context.Background(), system, conversation, "gemini-2.5-flash", sqirvy.Options{})
+	resp, err = client.QueryText(context.Background(), system, conversation, model, sqirvy.Options{})
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -42,7 +42,7 @@ func main() {
 
 	// Step 2
 	conversation = append(conversation, prompt2)
-	resp, err = client.QueryText(context.Background(), system, conversation, "gemini-2.5-flash", sqirvy.Options{})
+	resp, err = client.QueryText(context.Background(), system, conversation, model, sqirvy.Options{})
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -51,7 +51,7 @@ func main() {
 
 	// Step 3
 	conversation = append(conversation, prompt3)
-	resp, err = client.QueryText(context.Background(), system, conversation, "gemini-2.5-flash", sqirvy.Options{})
+	resp, err = client.QueryText(context.Background(), system, conversation, model, sqirvy.Options{})
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -60,7 +60,7 @@ func main() {
 
 	// Step 4
 	conversation = append(conversation, prompt4)
-	resp, err = client.QueryText(context.Background(), system, conversation, "gemini-2.5-flash", sqirvy.Options{})
+	resp, err = client.QueryText(context.Background(), system, conversation, model, sqirvy.Options{})
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -69,5 +69,6 @@ func main() {
 
 	for _, v := range conversation {
 		fmt.Println(v)
+		fmt.Println()
 	}
 }
