@@ -1,4 +1,4 @@
-// Package sqirvy provides a unified interface for interacting with various AI language models.
+// package go_llmclient provides a unified interface for interacting with various AI language models.
 //
 // The package supports multiple AI providers including:
 // - Anthropic (Claude models)
@@ -7,7 +7,7 @@
 //
 // It provides a consistent interface for making text and JSON queries while handling
 // provider-specific implementation details internally.
-package sqirvy
+package go_llmclient
 
 import (
 	"context"

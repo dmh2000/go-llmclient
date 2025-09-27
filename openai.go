@@ -1,9 +1,9 @@
-// Package sqirvy provides integration with OpenAI models via langchaingo.
+// package go_llmclient provides integration with OpenAI models via langchaingo.
 //
 // This file implements the Client interface for OpenAI models using
 // langchaingo's OpenAI-compatible interface. It handles model initialization,
 // prompt formatting, and response parsing.
-package sqirvy
+package go_llmclient
 
 import (
 	"context"

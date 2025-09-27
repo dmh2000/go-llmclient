@@ -1,10 +1,10 @@
-# Sqirvy LLM Client
+# LLM Client For Go
 
 A unified Go library and command-line tool for interacting with multiple Large Language Model (LLM) providers. This library provides a way to add a simple AI query to your Go applications.
 
-## Sqirvy LLM Client Library
+## Go LLM Client Library
 
-The `sqirvy-llmclient` library provides a consistent, unified interface for working with AI language models from different providers. It abstracts away provider-specific implementations behind a common `Client` interface, making it easy to switch between different AI models and providers in your Go applications.
+The `go-llmclient` library provides a consistent, unified interface for working with AI language models from different providers. It abstracts away provider-specific implementations behind a common `Client` interface, making it easy to switch between different AI models and providers in your Go applications.
 
 ### Supported Providers
 
@@ -24,7 +24,7 @@ The `sqirvy-llmclient` library provides a consistent, unified interface for work
 ### Quick Start
 
 ```go
-import "github.com/dmh2000/sqirvy-llmclient"
+import "github.com/dmh2000/go-llmclient"
 
 // Create a client for any supported provider
 client, err := sqirvy.NewClient("anthropic")
@@ -158,6 +158,7 @@ The project includes comprehensive testing at multiple levels to ensure reliabil
 **Command**: `make test` or `go test -v -timeout 2m .`
 
 **Coverage**:
+
 - Unit tests for each AI provider client (`*_test.go`)
 - Client interface validation
 - Model registry functionality
@@ -165,8 +166,9 @@ The project includes comprehensive testing at multiple levels to ensure reliabil
 - Configuration and option handling
 
 **Test Structure**:
+
 - `anthropic_test.go` - Anthropic Claude client tests
-- `gemini_test.go` - Google Gemini client tests  
+- `gemini_test.go` - Google Gemini client tests
 - `openai_test.go` - OpenAI client tests
 - `models_test.go` - Model registry and mapping tests
 - `client_test.go` - Core client interface tests
@@ -177,6 +179,7 @@ The project includes comprehensive testing at multiple levels to ensure reliabil
 **Command**: `./test.sh`
 
 **Coverage**:
+
 - End-to-end CLI command testing
 - All command types (query, plan, code, review)
 - Multiple AI model integration
@@ -184,7 +187,8 @@ The project includes comprehensive testing at multiple levels to ensure reliabil
 - Configuration file handling
 - Error condition testing
 
-**Test Outputs**: 
+**Test Outputs**:
+
 - Test results stored in `cmd/sqirvy-cli/test/` directory
 - Includes sample outputs for validation
 - Performance and response quality assessment
@@ -210,8 +214,9 @@ go test -v -cover .
 ### Test Requirements
 
 **Environment Variables**: Tests require valid API keys for full integration testing:
+
 - `ANTHROPIC_API_KEY`
-- `GEMINI_API_KEY` 
+- `GEMINI_API_KEY`
 - `OPENAI_API_KEY`
 
 **Network Access**: Integration tests make real API calls to validate provider functionality

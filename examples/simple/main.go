@@ -4,17 +4,17 @@ import (
 	"context"
 	"fmt"
 
-	sqirvy "github.com/dmh2000/go-llmclient"
+	llmclient "github.com/dmh2000/go-llmclient"
 )
 
 // This example is an example of a simple query where the system prompt is provided by the user
 func main() {
 
-	for _, model := range sqirvy.GetModelList() {
+	for _, model := range llmclient.GetModelList() {
 		fmt.Println(model)
 	}
 
-	client, err := sqirvy.NewClient("anthropic")
+	client, err := llmclient.NewClient("anthropic")
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -24,7 +24,7 @@ func main() {
 		"Write a poem about a happy carrot",
 		"Write a poem about a sad carrot",
 	}
-	resp, err := client.QueryText(context.Background(), system, prompts, "claude-sonnet-4-20250514", sqirvy.Options{})
+	resp, err := client.QueryText(context.Background(), system, prompts, "claude-sonnet-4-20250514", llmclient.Options{})
 	if err != nil {
 		fmt.Println(err)
 		return

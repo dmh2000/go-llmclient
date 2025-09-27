@@ -10,7 +10,7 @@ import (
 	"os"
 	"strings"
 
-	sqirvy "github.com/dmh2000/go-llmclient"
+	llmclient "github.com/dmh2000/go-llmclient"
 )
 
 // executeQuery processes and executes an AI model query with the given system prompt and arguments.
@@ -26,7 +26,7 @@ import (
 //   - error: Any error encountered during execution
 func executeQuery(model string, temperature float64, system string, args []string) (string, error) {
 	// check if it has an alias
-	model = sqirvy.GetModelAlias(model)
+	model = llmclient.GetModelAlias(model)
 
 	// Print the selected model to stderr
 	fmt.Fprintln(os.Stderr, "Using model :", model)
@@ -46,7 +46,7 @@ func executeQuery(model string, temperature float64, system string, args []strin
 	system = builder.String()
 
 	// Determine the AI provider based on the selected model
-	provider, err := sqirvy.GetProviderName(model)
+	provider, err := llmclient.GetProviderName(model)
 	if err != nil {
 		// many of the models are not registered with this package
 		// use user model name and assume openai compatible provider
@@ -54,7 +54,7 @@ func executeQuery(model string, temperature float64, system string, args []strin
 	}
 
 	// Create client for the provider
-	client, err := sqirvy.NewClient(provider)
+	client, err := llmclient.NewClient(provider)
 	if err != nil {
 		return "", fmt.Errorf("error: creating client for provider %s: %v", provider, err)
 	}
@@ -66,7 +66,7 @@ func executeQuery(model string, temperature float64, system string, args []strin
 	}()
 
 	// Configure query options and execute the query
-	options := sqirvy.Options{Temperature: float32(temperature), MaxTokens: sqirvy.GetMaxTokens(model)}
+	options := llmclient.Options{Temperature: float32(temperature), MaxTokens: llmclient.GetMaxTokens(model)}
 	ctx := context.Background()
 	response, err := client.QueryText(ctx, system, prompts, model, options)
 	if err != nil {

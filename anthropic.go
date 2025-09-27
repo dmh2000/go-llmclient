@@ -1,5 +1,5 @@
-// Package sqirvy provides integration with Anthropic's Claude AI models.
-package sqirvy
+// package go_llmclient provides integration with Anthropic's Claude AI models.
+package go_llmclient
 
 import (
 	"context"

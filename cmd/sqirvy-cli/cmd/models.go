@@ -8,8 +8,7 @@ import (
 	"fmt"
 	"sort"
 
-	sqirvy "github.com/dmh2000/go-llmclient"
-
+	llmclient "github.com/dmh2000/go-llmclient"
 	"github.com/spf13/cobra"
 )
 
@@ -19,10 +18,10 @@ import (
 var modelsCmd = &cobra.Command{
 	Use:   "models",
 	Short: "List the supported LLM models and providers",
-	Long:  `sqirvy-cli models lists all the Large Language Models (LLMs) supported by the tool, grouped by their provider (e.g., OpenAI, Anthropic, Gemini).`,
+	Long:  `llmclient-cli models lists all the Large Language Models (LLMs) supported by the tool, grouped by their provider (e.g., OpenAI, Anthropic, Gemini).`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// Retrieve the list of models and providers
-		mplist := sqirvy.GetModelProviderList()
+		mplist := llmclient.GetModelProviderList()
 		if mplist == nil {
 			fmt.Println("No models found")
 			return

@@ -1,4 +1,4 @@
-package sqirvy
+package go_llmclient
 
 import (
 	"context"

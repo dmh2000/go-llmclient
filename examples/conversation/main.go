@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	sqirvy "github.com/dmh2000/go-llmclient"
+	llmclient "github.com/dmh2000/go-llmclient"
 )
 
 var system = `You are an expert in ai and large language models who it teaching a junior software developer.
@@ -20,7 +20,7 @@ var prompt4 = "\n **WHAT DOES THE FEED FORWARD NEURAL NETWORK PHASE DO?**\n"
 func main() {
 
 	provider := "gemini"
-	client, err := sqirvy.NewClient(provider)
+	client, err := llmclient.NewClient(provider)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -33,7 +33,7 @@ func main() {
 
 	// Step 1
 	conversation = append(conversation, prompt1)
-	resp, err = client.QueryText(context.Background(), system, conversation, model, sqirvy.Options{})
+	resp, err = client.QueryText(context.Background(), system, conversation, model, llmclient.Options{})
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -42,7 +42,7 @@ func main() {
 
 	// Step 2
 	conversation = append(conversation, prompt2)
-	resp, err = client.QueryText(context.Background(), system, conversation, model, sqirvy.Options{})
+	resp, err = client.QueryText(context.Background(), system, conversation, model, llmclient.Options{})
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -51,7 +51,7 @@ func main() {
 
 	// Step 3
 	conversation = append(conversation, prompt3)
-	resp, err = client.QueryText(context.Background(), system, conversation, model, sqirvy.Options{})
+	resp, err = client.QueryText(context.Background(), system, conversation, model, llmclient.Options{})
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -60,7 +60,7 @@ func main() {
 
 	// Step 4
 	conversation = append(conversation, prompt4)
-	resp, err = client.QueryText(context.Background(), system, conversation, model, sqirvy.Options{})
+	resp, err = client.QueryText(context.Background(), system, conversation, model, llmclient.Options{})
 	if err != nil {
 		fmt.Println(err)
 		return

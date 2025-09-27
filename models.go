@@ -1,8 +1,8 @@
-// Package sqirvy provides model management functionality for AI language models.
+// package go_llmclient provides model management functionality for AI language models.
 //
 // This file contains model-to-provider mappings and utility functions for
 // working with different AI models across supported providers.
-package sqirvy
+package go_llmclient
 
 import "fmt"
 
