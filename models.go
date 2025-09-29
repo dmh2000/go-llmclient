@@ -4,10 +4,15 @@
 // working with different AI models across supported providers.
 package go_llmclient
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+	"path/filepath"
+)
 
 var modelAlias = map[string]string{
-	"claude-sonnet-4":  "claude-sonnet-4-20250514",
+	"claude-sonnet-4":  "claude-sonnet-4-5-20250929",
 	"claude-opus-4-1":  "claude-opus-4-1-20250805",
 	"claude-3-5-haiku": "claude-3-5-haiku-20241022",
 }
@@ -33,9 +38,9 @@ type ModelInfo struct {
 // modelRegistry is the single source of truth for model information
 var modelRegistry = map[string]ModelInfo{
 	// anthropic models
-	"claude-sonnet-4-20250514":  {Provider: Anthropic, MaxOutputTokens: 64000},
-	"claude-opus-4-1-20250805":  {Provider: Anthropic, MaxOutputTokens: 32000},
-	"claude-3-5-haiku-20241022": {Provider: Anthropic, MaxOutputTokens: 8096},
+	"claude-sonnet-4-5-20250929": {Provider: Anthropic, MaxOutputTokens: 64000},
+	"claude-opus-4-1-20250805":   {Provider: Anthropic, MaxOutputTokens: 32000},
+	"claude-3-5-haiku-20241022":  {Provider: Anthropic, MaxOutputTokens: 8096},
 	// google gemini models
 	"gemini-2.5-pro":   {Provider: Gemini, MaxOutputTokens: 64000},
 	"gemini-2.5-flash": {Provider: Gemini, MaxOutputTokens: 64000},
@@ -50,10 +55,101 @@ var modelRegistry = map[string]ModelInfo{
 // This map is maintained for backward compatibility
 var modelToMaxOutputTokens = map[string]int64{}
 
+// CustomModelConfig represents the structure of the custom models configuration file
+type CustomModelConfig struct {
+	Models []CustomModel `json:"models"`
+}
+
+// CustomModel represents a single custom model configuration
+type CustomModel struct {
+	Name            string `json:"name"`
+	Provider        string `json:"provider"`
+	MaxOutputTokens int64  `json:"max_output_tokens"`
+}
+
+// getConfigPath searches for a custom models configuration file in the following order:
+// 1. Environment variable: LLMCLIENT_MODELS_CONFIG
+// 2. Current directory: ./llmclient-models.json
+// 3. User home: ~/.config/llmclient/models.json
+func getConfigPath() string {
+	// Check environment variable
+	if configPath := os.Getenv("LLMCLIENT_MODELS_CONFIG"); configPath != "" {
+		if _, err := os.Stat(configPath); err == nil {
+			return configPath
+		}
+	}
+
+	// Check current directory
+	if _, err := os.Stat("./llmclient-models.json"); err == nil {
+		return "./llmclient-models.json"
+	}
+
+	// Check user home config directory
+	if homeDir, err := os.UserHomeDir(); err == nil {
+		configPath := filepath.Join(homeDir, ".config", "llmclient", "models.json")
+		if _, err := os.Stat(configPath); err == nil {
+			return configPath
+		}
+	}
+
+	return ""
+}
+
+// LoadCustomModels loads custom model configurations from a JSON file
+// and merges them into the modelRegistry. Built-in models cannot be overridden.
+// Returns an error if the file cannot be read or parsed, or if any model has an invalid provider.
+func LoadCustomModels(configPath string) error {
+	data, err := os.ReadFile(configPath)
+	if err != nil {
+		return fmt.Errorf("failed to read config file: %w", err)
+	}
+
+	var config CustomModelConfig
+	if err := json.Unmarshal(data, &config); err != nil {
+		return fmt.Errorf("failed to parse config file: %w", err)
+	}
+
+	// Validate and add custom models
+	for _, model := range config.Models {
+		// Validate provider
+		if model.Provider != Anthropic && model.Provider != Gemini && model.Provider != OpenAI {
+			return fmt.Errorf("invalid provider '%s' for model '%s': must be one of %s, %s, or %s",
+				model.Provider, model.Name, Anthropic, Gemini, OpenAI)
+		}
+
+		// Don't allow overriding built-in models
+		if _, exists := modelRegistry[model.Name]; exists {
+			continue
+		}
+
+		// Add custom model to registry
+		modelRegistry[model.Name] = ModelInfo{
+			Provider:        model.Provider,
+			MaxOutputTokens: model.MaxOutputTokens,
+		}
+	}
+
+	return nil
+}
+
 // Initialize modelToMaxTokens from modelRegistry for backward compatibility
 func init() {
+	// First, populate backward compatibility map from built-in models
 	for model, info := range modelRegistry {
 		modelToMaxOutputTokens[model] = info.MaxOutputTokens
+	}
+
+	// Load custom models if config exists
+	if configPath := getConfigPath(); configPath != "" {
+		// Ignore errors to allow app to run with defaults
+		_ = LoadCustomModels(configPath)
+
+		// Update backward compatibility map with any newly added models
+		for model, info := range modelRegistry {
+			if _, exists := modelToMaxOutputTokens[model]; !exists {
+				modelToMaxOutputTokens[model] = info.MaxOutputTokens
+			}
+		}
 	}
 }
 
