@@ -24,24 +24,37 @@ The `go-llmclient` library provides a consistent, unified interface for working 
 ### Quick Start
 
 ```go
-import "github.com/dmh2000/go-llmclient"
+import (
+	"context"
+	"fmt"
+	"log"
 
-// Create a client for any supported provider
-client, err := sqirvy.NewClient("anthropic")
-if err != nil {
-    log.Fatal(err)
-}
-defer client.Close()
-
-// Query the model
-ctx := context.Background()
-response, err := client.QueryText(
-    ctx,
-    "You are a helpful assistant",
-    []string{"What is the capital of France?"},
-    "claude-sonnet-4",
-    sqirvy.Options{Temperature: 0.5, MaxTokens: 1000},
+	llmclient "github.com/dmh2000/go-llmclient"
 )
+
+func main() {
+	// Create a client for any supported provider
+	client, err := llmclient.NewClient("anthropic")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer client.Close()
+
+	// Query the model
+	ctx := context.Background()
+	model := "claude-3-5-haiku-20241022" // specify the model to use
+	response, err := client.QueryText(
+		ctx,
+		"You are a helpful assistant",
+		[]string{"What is the capital of France?"},
+		model,
+		llmclient.Options{Temperature: 0.5, MaxTokens: 1000},
+	)
+	if err != nil {
+		log.Fatalf("query failed: %v", err)
+	}
+	fmt.Println(response)
+}
 ```
 
 For detailed API documentation, usage examples, and provider-specific information, see [API.md](API.md).
