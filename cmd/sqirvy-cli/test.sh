@@ -1,39 +1,18 @@
 #!/bin/bash
 
 BINDIR=../bin
-TARGET=$BINDIR/sqirvy-cli
 TESTDIR=./test
+TARGET=
 
-# rebuild the binaries
-make
 
-# a test must pass
 check_return_code() {
-    local cmd="$1"
-    $cmd $2 $3 $4 $5 $6 $7 $8 $9
-    local return_code=$?
-    
-    if [ $return_code -ne 0 ]; then
-        echo "Command '$cmd' failed with exit code $return_code"
+    local ret=$?
+    if [ $ret -ne 0 ]; then
+        echo "Command failed with exit code $ret"
         exit 1
     fi
-    
-    return $return_code
 }
 
-# ok if a test fails
-ignore_return_code() {
-    local cmd="$1"
-    $cmd $2 $3 $4 $5 $6 $7 $8 $9
-    local return_code=$?
-    
-    return 0
-}
-
-scrape="scrape this url and create a single html file containing html,css and js that \
-   creates a dummy webpage that has the same layout and styling as the original webpage. \
-   do not include any explanations or other text in the output. remove any triple backticks from the output.  \
-   the output should be ready to be served as a webpage"
 
 plan="create a plan for scafolding a single page web app using the vit framework. \
    the app should be sleek and modern. \
@@ -63,20 +42,32 @@ mkdir -p $TESTDIR
 
 echo "-------------------------------"
 echo "sqirvy no flags or args"
-check_return_code                 $TARGET                                             >$TESTDIR/no-flags-or-args.md
+go run .         
+check_return_code
+
 echo "-------------------------------"
 echo "sqirvy -h"
-check_return_code                 $TARGET -h                                          >$TESTDIR/help.md
+go run . -h                                                          >$TESTDIR/help.md
+check_return_code
+
 echo "-------------------------------"
 echo "sqirvy  plan"
-check_return_code echo $plan |    $TARGET plan   -m gemini-2.5-flash main.go          >$TESTDIR/plan.md
+echo $plan | go run . plan -m gemini-2.5-flash main.go               >$TESTDIR/plan.md
+check_return_code
+
 echo "-------------------------------"
 echo "sqirvy  code"
-check_return_code echo $code |    $TARGET code                                        >$TESTDIR/code.html
+echo $code | go run . code                                           >$TESTDIR/code.html
+check_return_code
+
 echo "-------------------------------"
 echo "sqirvy review"
-check_return_code                 $TARGET review -m gemini-2.5-flash main.go          >$TESTDIR/review.md
+echo $review | go run . review -m gemini-2.5-flash main.go           >$TESTDIR/review.md
+check_return_code
+
 echo "-------------------------------"
 echo "sqirvy query"
-check_return_code echo $query |   $TARGET query -m claude-3-5-haiku-20241022 main.go    >$TESTDIR/query1.md
+echo $query  | go run . query -m claude-3-5-haiku-20241022 main.go   >$TESTDIR/query1.md
+check_return_code
+
 echo "-------------------------------"

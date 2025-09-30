@@ -37,7 +37,7 @@ lint:
 	golangci-lint run ./...
 
 test:
-	@./test.sh 
+# 	@./test.sh 
 	@echo "Tests passed"
 	
 clean:

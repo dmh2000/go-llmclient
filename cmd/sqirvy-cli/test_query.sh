@@ -28,7 +28,7 @@ for model in "${models[@]}"; do
     echo "Testing model: $model"
     echo "==============================================================="
     output_file="$TESTDIR/query_${model}.txt"
-    echo "$query" | $TARGET query -m "$model" > "$output_file" 2>&1
+    echo "$query" | go run . query -m "$model" > "$output_file" 2>&1
     
     # Get the exit code
     exit_code=$?
