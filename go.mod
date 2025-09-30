@@ -9,8 +9,8 @@ replace github.com/dmh2000/go-llmclient => .
 require (
 	github.com/gocolly/colly/v2 v2.2.0
 	github.com/spf13/cobra v1.9.1
-	github.com/spf13/viper v1.20.1
 	github.com/tmc/langchaingo v0.1.13
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
@@ -31,10 +31,8 @@ require (
 	github.com/bits-and-blooms/bitset v1.24.0 // indirect
 	github.com/dlclark/regexp2 v1.11.5 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
-	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
-	github.com/go-viper/mapstructure/v2 v2.4.0 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
@@ -46,15 +44,9 @@ require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/kennygrant/sanitize v1.2.4 // indirect
 	github.com/nlnwa/whatwg-url v0.6.2 // indirect
-	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/pkoukk/tiktoken-go v0.1.7 // indirect
-	github.com/sagikazarmark/locafero v0.10.0 // indirect
 	github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d // indirect
-	github.com/sourcegraph/conc v0.3.1-0.20240121214520-5f936abd7ae8 // indirect
-	github.com/spf13/afero v1.14.0 // indirect
-	github.com/spf13/cast v1.9.2 // indirect
 	github.com/spf13/pflag v1.0.7 // indirect
-	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/temoto/robotstxt v1.1.2 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.63.0 // indirect
@@ -76,5 +68,4 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250826171959-ef028d996bc1 // indirect
 	google.golang.org/grpc v1.75.0 // indirect
 	google.golang.org/protobuf v1.36.8 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

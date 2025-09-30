@@ -8,11 +8,11 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
-var cfgFile string
 var defaultPrompt = "Hello"
+var model string
+var temperature float64
 
 const defaultModel = "gemini-2.5-flash"
 const defaultTemperature = 0.5
@@ -57,64 +57,11 @@ func Execute() {
 	}
 }
 
-// init sets up the application's persistent flags and initializes configuration handling.
+// init sets up the application's persistent flags.
 // It defines flags common to all commands, such as model selection and temperature.
 func init() {
-	// Register the initConfig function to run when Cobra initializes.
-	cobra.OnInitialize(initConfig)
-
 	// Define persistent flags available to the root command and all subcommands.
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.config/sqirvy-cli/config.yaml)") // Example if config file flag was used
-
 	rootCmd.PersistentFlags().StringVar(&defaultPrompt, "default-prompt", "Hello", "Default prompt if no stdin/args provided")
-	err := viper.BindPFlag("default-prompt", rootCmd.PersistentFlags().Lookup("default-prompt")) // Bind flag to Viper config
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "ERROR: invalid flag: \nError binding flag to config: %v\n", err)
-		os.Exit(1)
-	}
-
-	rootCmd.PersistentFlags().StringP("model", "m", defaultModel, "LLM model to use (e.g., gpt-4o, claude-sonnet-4)")
-	err = viper.BindPFlag("model", rootCmd.PersistentFlags().Lookup("model")) // Bind flag to Viper config
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "ERROR: invalid flag: \nError binding flag to config: %v\n", err)
-		os.Exit(1)
-	}
-
-	rootCmd.PersistentFlags().Float32P("temperature", "t", defaultTemperature, "LLM temperature (randomness) to use (0.0 to 1.0)")
-	err = viper.BindPFlag("temperature", rootCmd.PersistentFlags().Lookup("temperature")) // Bind flag to Viper config
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "ERROR: invalid flag: \nError binding flag to config: %v\n", err)
-		os.Exit(1)
-	}
-}
-
-// configPrinted ensures the config file path is printed only once to stderr.
-var configPrinted bool
-
-// initConfig reads in configuration settings from a config file (if found)
-// and environment variables. Viper handles the precedence (flags > env > config).
-func initConfig() {
-	if cfgFile != "" {
-		// Use config file from the flag.
-		viper.SetConfigFile(cfgFile)
-	} else {
-		// Find home directory.
-		home, err := os.UserHomeDir()
-		cobra.CheckErr(err)
-
-		// Search config in home directory with name ".config/sqirvy-cli" (without extension).
-		viper.AddConfigPath(home + "/.config/sqirvy-cli")
-		viper.SetConfigType("yaml")
-		viper.SetConfigName("config")
-	}
-
-	viper.AutomaticEnv() // read in environment variables that match
-
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		if !configPrinted {
-			configPrinted = true
-			fmt.Fprintln(os.Stderr, "Config file :", viper.ConfigFileUsed())
-		}
-	}
+	rootCmd.PersistentFlags().StringVarP(&model, "model", "m", defaultModel, "LLM model to use (e.g., gpt-4o, claude-sonnet-4)")
+	rootCmd.PersistentFlags().Float64VarP(&temperature, "temperature", "t", defaultTemperature, "LLM temperature (randomness) to use (0.0 to 1.0)")
 }

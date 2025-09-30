@@ -8,7 +8,6 @@ import (
 	"log"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // queryCmd represents the command to execute an arbitrary query against the LLM.
@@ -24,10 +23,6 @@ this system prompt, any input from stdin, and then any filename or url arguments
 in the order specified.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		// get arg/config params
-		model := viper.GetString("model")
-		temperature := viper.GetFloat64("temperature")
-
 		// Execute the query using the generic query prompt
 		response, err := executeQuery(model, temperature, queryPrompt, args)
 		if err != nil {

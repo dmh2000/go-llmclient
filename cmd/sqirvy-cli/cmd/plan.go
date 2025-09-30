@@ -8,7 +8,6 @@ import (
 	"log"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // planCmd represents the command to request a plan generation from the LLM.
@@ -28,10 +27,6 @@ The prompt is constructed in this order:
 	Input from stdin
 	Any number of filename or url arguments	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// get arg/config params
-		model := viper.GetString("model")
-		temperature := viper.GetFloat64("temperature")
-
 		// Execute the query using the specific planning prompt
 		response, err := executeQuery(model, temperature, planPrompt, args)
 		if err != nil {
