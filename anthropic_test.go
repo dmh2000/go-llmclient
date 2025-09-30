@@ -17,6 +17,7 @@ func TestAnthropicClient_QueryText(t *testing.T) {
 	client, err := NewAnthropicClient()
 	if err != nil {
 		t.Errorf("new client failed: %v", err)
+		return
 	}
 
 	tests := []struct {
@@ -25,14 +26,14 @@ func TestAnthropicClient_QueryText(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:    "Basic prompt",
-			prompt:  []string{"Say 'Hello, World!'"},
-			wantErr: false,
-		},
-		{
 			name:    "Empty prompt",
 			prompt:  []string{},
 			wantErr: true,
+		},
+		{
+			name:    "Basic prompt",
+			prompt:  []string{"Say 'Hello, World!'"},
+			wantErr: false,
 		},
 	}
 
