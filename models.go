@@ -5,10 +5,11 @@
 package go_llmclient
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"gopkg.in/yaml.v3"
 )
 
 var modelAlias = map[string]string{
@@ -57,20 +58,20 @@ var modelToMaxOutputTokens = map[string]int64{}
 
 // CustomModelConfig represents the structure of the custom models configuration file
 type CustomModelConfig struct {
-	Models []CustomModel `json:"models"`
+	Models []CustomModel `yaml:"models"`
 }
 
 // CustomModel represents a single custom model configuration
 type CustomModel struct {
-	Name            string `json:"name"`
-	Provider        string `json:"provider"`
-	MaxOutputTokens int64  `json:"max_output_tokens"`
+	Name            string `yaml:"name"`
+	Provider        string `yaml:"provider"`
+	MaxOutputTokens int64  `yaml:"max_output_tokens"`
 }
 
 // getConfigPath searches for a custom models configuration file in the following order:
 // 1. Environment variable: LLMCLIENT_MODELS_CONFIG
-// 2. Current directory: ./llmclient-models.json
-// 3. User home: ~/.config/llmclient/models.json
+// 2. Current directory: ./llmclient-models.yaml
+// 3. User home: ~/.config/llmclient/models.yaml
 func getConfigPath() string {
 	// Check environment variable
 	if configPath := os.Getenv("LLMCLIENT_MODELS_CONFIG"); configPath != "" {
@@ -80,13 +81,13 @@ func getConfigPath() string {
 	}
 
 	// Check current directory
-	if _, err := os.Stat("./llmclient-models.json"); err == nil {
-		return "./llmclient-models.json"
+	if _, err := os.Stat("./llmclient-models.yaml"); err == nil {
+		return "./llmclient-models.yaml"
 	}
 
 	// Check user home config directory
 	if homeDir, err := os.UserHomeDir(); err == nil {
-		configPath := filepath.Join(homeDir, ".config", "llmclient", "models.json")
+		configPath := filepath.Join(homeDir, ".config", "llmclient", "models.yaml")
 		if _, err := os.Stat(configPath); err == nil {
 			return configPath
 		}
@@ -95,7 +96,7 @@ func getConfigPath() string {
 	return ""
 }
 
-// LoadCustomModels loads custom model configurations from a JSON file
+// LoadCustomModels loads custom model configurations from a YAML file
 // and merges them into the modelRegistry. Built-in models cannot be overridden.
 // Returns an error if the file cannot be read or parsed, or if any model has an invalid provider.
 func LoadCustomModels(configPath string) error {
@@ -105,7 +106,7 @@ func LoadCustomModels(configPath string) error {
 	}
 
 	var config CustomModelConfig
-	if err := json.Unmarshal(data, &config); err != nil {
+	if err := yaml.Unmarshal(data, &config); err != nil {
 		return fmt.Errorf("failed to parse config file: %w", err)
 	}
 

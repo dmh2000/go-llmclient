@@ -1,0 +1,10 @@
+models:
+  - name: claude-opus-4
+    provider: anthropic
+    max_output_tokens: 16000
+  - name: gpt-4-turbo
+    provider: openai
+    max_output_tokens: 4096
+  - name: gemini-1.5-pro
+    provider: gemini
+    max_output_tokens: 8192
