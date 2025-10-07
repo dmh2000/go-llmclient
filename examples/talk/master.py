@@ -19,12 +19,12 @@ def main():
 
     # Filter to ensure they match the exact pattern "out-(number).wav"
     # This regex ensures we only get files with numbers after "out-"
-    number_pattern = re.compile(r"^out-\d+\.wav$")
+    number_pattern = re.compile(r"^out-.*\d+\.wav$")
     filtered_files = [f for f in wav_files if number_pattern.match(f)]
 
     # Sort files numerically by the number in the filename
     def extract_number(filename):
-        match = re.search(r"out-(\d+)\.wav", filename)
+        match = re.search(r"out-.*(\d+)\.wav", filename)
         return int(match.group(1)) if match else 0
 
     filtered_files.sort(key=extract_number)
