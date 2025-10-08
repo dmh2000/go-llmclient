@@ -41,6 +41,8 @@ def main():
 
     subprocess.run(["ffmpeg -f concat -i files.txt -c copy master.wav"], shell=True)
 
+    subprocess.run("ffplay master.wav", shell=True)
+
 
 if __name__ == "__main__":
     main()

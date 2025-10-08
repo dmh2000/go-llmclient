@@ -7,6 +7,8 @@ from google import genai
 from google.genai import types
 
 model = "claude-3-5-haiku-20241022"
+astro_voice = "algenib"
+moon_voice = "Rasalgethi"
 
 
 def wave_file(filename, pcm, channels=1, rate=24000, sample_width=2):
@@ -18,15 +20,40 @@ def wave_file(filename, pcm, channels=1, rate=24000, sample_width=2):
         wf.writeframes(pcm)
 
 
-def speak(voice, text_file, file_number):
+def synthesize_text(voice, text, file_number):
+    """Synthesizes speech from the input string of text."""
+    from google.cloud import texttospeech
+
+    text = "Hello there."
+    client = texttospeech.TextToSpeechClient()
+
+    input_text = texttospeech.SynthesisInput(text=text)
+
+    # Note: the voice can also be specified by name.
+    # Names of voices can be retrieved with client.list_voices().
+    voice = texttospeech.VoiceSelectionParams(language_code="en-US", name=voice)
+
+    audio_config = texttospeech.AudioConfig(
+        audio_encoding=texttospeech.AudioEncoding.WAV
+    )
+
+    response = client.synthesize_speech(
+        input=input_text,
+        voice=voice,
+        audio_config=audio_config,
+    )
+
+    # The response's audio_content is binary.
+    file_name = f"out-{file_number}.wav"
+    with open(file_name, "wb") as out:
+        out.write(response.audio_content)
+
+    return file_name
+
+
+def speak(voice, text, file_number):
     """Generate speech from text using Google Gemini TTS API."""
     try:
-        # Read input text from file
-        with open(text_file, "r") as f:
-            input_text = f.read()
-
-        text = {"text": input_text}
-
         client = genai.Client(api_key=os.environ.get("GOOGLE_API_KEY"))
 
         response = client.models.generate_content(
@@ -70,7 +97,7 @@ def audio(wav_file):
         sys.exit(1)
 
 
-def query_llm(markdown_file, text_file):
+def query_llm(context):
     """Call sqirvy-cli query command with markdown and text file arguments."""
     try:
         result = subprocess.run(
@@ -79,9 +106,8 @@ def query_llm(markdown_file, text_file):
                 "query",
                 "-m",
                 model,
-                markdown_file,
-                text_file,
             ],
+            input=context,
             capture_output=True,
             text=True,
             check=True,
@@ -103,17 +129,23 @@ def main():
     initial_greeting = " ".join(sys.argv[1:])
 
     # Initialize conversation files
-    astro_file = "astro.txt"
-    moon_file = "moon.txt"
     xml_log = "talk.xml"
+    context = ""
 
     # Create/clear the XML log file
     with open(xml_log, "w") as f:
         f.write("<conversation>\n")
 
-    # Initialize Astro's first message
-    with open(astro_file, "w") as f:
-        f.write(initial_greeting)
+    # Initialize context with the initial greeting
+    with open("astro.xml", "r") as f:
+        astro = f.read()
+
+    with open("moon.xml", "r") as f:
+        moon = f.read()
+
+    context += astro
+    context += moon
+    context = f"Astro: {initial_greeting}\n"
 
     # Log initial greeting
     with open(xml_log, "a") as f:
@@ -121,18 +153,21 @@ def main():
 
     # Play initial greeting
     print(f"Astro: {initial_greeting}")
-    initial_wav = speak("Charon", astro_file, "astro-initial")
+    initial_wav = speak(astro_voice, initial_greeting, "astro-initial")
     audio(initial_wav)
 
     # Conversation loop
+    n = 0
     for i in range(5):
         print(f"\n--- Round {i + 1} ---")
 
-        # Moon responds to Astro
+        # Moon responds to Astro using full context
         print("Moon thinking...")
-        moon_response = query_llm("moon.md", astro_file)
-        with open(moon_file, "w") as f:
-            f.write(moon_response)
+        context += "<silent>answer a question from astro about the topic</silent>"
+        moon_response = query_llm(context)
+
+        # Update context with Moon's response
+        context += f"Moon: {moon_response}\n"
 
         # Log Moon's response
         with open(xml_log, "a") as f:
@@ -141,14 +176,18 @@ def main():
         print(f"Moon: {moon_response}")
 
         # Generate speech for Moon
-        moon_wav = speak("Puck", moon_file, f"moon-{i}")
+        n += 1
+        moon_wav = speak(moon_voice, moon_response, f"{n}")
+
         audio(moon_wav)
 
-        # Astro responds to Moon
+        # Astro responds to Moon using full context
         print("Astro thinking...")
-        astro_response = query_llm("astro.md", moon_file)
-        with open(astro_file, "w") as f:
-            f.write(astro_response)
+        context += "<silent>ask a question to moon about the topic</silent>"
+        astro_response = query_llm(context)
+
+        # Update context with Astro's response
+        context += f"Astro: {astro_response}\n"
 
         # Log Astro's response
         with open(xml_log, "a") as f:
@@ -157,7 +196,8 @@ def main():
         print(f"Astro: {astro_response}")
 
         # Generate speech for Astro
-        astro_wav = speak("Charon", astro_file, f"astro-{i}")
+        n += 1
+        astro_wav = speak(astro_voice, astro_response, f"{n}")
         audio(astro_wav)
 
     # Close XML log
