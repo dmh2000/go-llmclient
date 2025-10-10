@@ -80,8 +80,6 @@ def main():
         with open(xml_log, "a") as f:
             f.write(f"  <alice>{alice_message}</alice>\n")
 
-        print(f"Alice: {alice_message}")
-
         # Update context with Alice's message
         context += f"Alice: {alice_message}\n"
 
@@ -100,8 +98,8 @@ def main():
 
         # Generate speech for Bob
         n += 1
-        bob_wav = audio_utils.speak(bob_voice, bob_response, f"bob-{n}")
-        audio_utils.play_wave(bob_wav)
+        bob_mp3 = audio_utils.speak(bob_voice, bob_response, f"bob-{n}")
+        audio_utils.play_mp3(bob_mp3)
 
         # Send Bob's response to Alice
         talk_tcp.talk_send(client_socket, bob_response)

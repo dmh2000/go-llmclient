@@ -19,7 +19,7 @@ def wave_file(filename, pcm, channels=1, rate=24000, sample_width=2):
 
 
 def speak(voice, text, file_number):
-    """Generate speech from text using Google Gemini TTS API."""
+    """Generate speech from text using Google Gemini TTS API and save as MP3."""
     try:
         client = genai.Client(api_key=os.environ.get("GOOGLE_API_KEY"))
 
@@ -40,8 +40,8 @@ def speak(voice, text, file_number):
 
         data = response.candidates[0].content.parts[0].inline_data.data
 
-        file_name = f"out-{file_number}.wav"
-        wave_file(file_name, data)
+        file_name = f"out-{file_number}.mp3"
+        pcm_to_mp3(data, file_name)
 
         return file_name
 

@@ -68,8 +68,8 @@ def main():
 
     # Play initial greeting
     print(f"alice: {initial_greeting}")
-    initial_wav = audio_utils.speak(alice_voice, initial_greeting, "alice-initial")
-    audio_utils.play_wave(initial_wav)
+    initial_mp3 = audio_utils.speak(alice_voice, initial_greeting, "alice-initial")
+    audio_utils.play_mp3(initial_mp3)
 
     # create a TCP client here with IP 127.0.0.1 and port 9000
     # have it connect to that server
@@ -91,16 +91,14 @@ def main():
         print("Bob thinking...")
 
         # wait for  a response from the server
-        bob_response = talk_tcp.talk_receive(socket)
+        bob_request = talk_tcp.talk_receive(socket)
 
         # Log Bob's response
         with open(xml_log, "a") as f:
-            f.write(f"  <Bob>{bob_response}</Bob>\n")
-
-        print(f"Bob: {bob_response}")
+            f.write(f"  <Bob>{bob_request}</Bob>\n")
 
         # Update context with Bob's response
-        context += f"Bob: {bob_response}\n"
+        context += f"Bob: {bob_request}\n"
 
         # --------- TALK TO BOB ---------
         # alice responds to Bob using full context
@@ -118,8 +116,8 @@ def main():
 
         # Generate speech for alice
         n += 1
-        alice_wav = audio_utils.speak(alice_voice, alice_says, f"{n}")
-        audio_utils.play_wave(alice_wav)
+        alice_mp3 = audio_utils.speak(alice_voice, alice_says, f"alice-{n}")
+        audio_utils.play_mp3(alice_mp3)
 
     # Close socket
     talk_tcp.talk_close(socket)

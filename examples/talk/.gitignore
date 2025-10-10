@@ -1,6 +1,7 @@
 venv
 out*.wav
 out-*.wav
+*.mp3
 astro.txt
 moon.txt
 talk.xml
