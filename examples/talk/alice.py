@@ -81,44 +81,47 @@ def main():
     n = 0
     i = 0
     while True:
-        print(f"\n--- Round {i + 1} ---")
+        try:
+            print(f"\n--- Round {i + 1} ---")
 
-        # send alice_says
-        talk_tcp.talk_send(socket, alice_says)
+            # send alice_says
+            talk_tcp.talk_send(socket, alice_says)
 
-        # --------- TALK BOB ---------
-        # Bob responds to alice
-        print("Bob thinking...")
+            # --------- TALK BOB ---------
+            # Bob responds to alice
+            print("Bob thinking...")
 
-        # wait for  a response from the server
-        bob_request = talk_tcp.talk_receive(socket)
+            # wait for  a response from the server
+            bob_request = talk_tcp.talk_receive(socket)
 
-        # Log Bob's response
-        with open(xml_log, "a") as f:
-            f.write(f"  <Bob>{bob_request}</Bob>\n")
+            # Log Bob's response
+            with open(xml_log, "a") as f:
+                f.write(f"  <Bob>{bob_request}</Bob>\n")
 
-        # Update context with Bob's response
-        context += f"Bob: {bob_request}\n"
+            # Update context with Bob's response
+            context += f"Bob: {bob_request}\n"
 
-        # --------- TALK TO BOB ---------
-        # alice responds to Bob using full context
-        print("alice thinking...")
-        alice_says = query_llm(context)
+            # --------- TALK TO BOB ---------
+            # alice responds to Bob using full context
+            print("alice thinking...")
+            alice_says = query_llm(context)
 
-        # Update context with alice's response
-        context += alice_says
+            # Update context with alice's response
+            context += alice_says
 
-        # Log alice's response
-        with open(xml_log, "a") as f:
-            f.write(f"  <alice>{alice_says}</alice>\n")
+            # Log alice's response
+            with open(xml_log, "a") as f:
+                f.write(f"  <alice>{alice_says}</alice>\n")
 
-        print(f"alice: {alice_says}")
+            print(f"alice: {alice_says}")
 
-        # Generate speech for alice
-        n += 1
-        alice_mp3 = audio_utils.speak(alice_voice, alice_says, f"alice-{n}")
-        audio_utils.play_mp3(alice_mp3)
-
+            # Generate speech for alice
+            n += 1
+            alice_mp3 = audio_utils.speak(alice_voice, alice_says, f"alice-{n}")
+            audio_utils.play_mp3(alice_mp3)
+        except Exception as e:
+            print(f"Error: {e}", file=sys.stderr)
+            break
     # Close socket
     talk_tcp.talk_close(socket)
 

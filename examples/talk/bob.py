@@ -67,42 +67,47 @@ def main():
     # Conversation loop
     n = 0
     while True:
-        # Receive message from Alice
-        print("\nBob: Waiting for message from Alice...")
-        alice_message = talk_tcp.talk_receive(client_socket)
+        try:
+            # Receive message from Alice
+            print("\nBob: Waiting for message from Alice...")
+            alice_message = talk_tcp.talk_receive(client_socket)
 
-        # Check if connection closed
-        if alice_message is None:
-            print("Bob: Alice disconnected")
+            # Check if connection closed
+            if alice_message is None:
+                print("Bob: Alice disconnected")
+                break
+
+            # Log Alice's message
+            with open(xml_log, "a") as f:
+                f.write(f"  <alice>{alice_message}</alice>\n")
+
+            # Update context with Alice's message
+            context += f"Alice: {alice_message}\n"
+
+            # Generate Bob's response using LLM
+            print("Bob: Thinking...")
+            bob_response = query_llm(context)
+
+            # Update context with Bob's response
+            context += bob_response
+
+            # Log Bob's response
+            with open(xml_log, "a") as f:
+                f.write(f"  <bob>{bob_response}</bob>\n")
+
+            print(f"Bob: {bob_response}")
+
+            # Generate speech for Bob
+            n += 1
+            bob_mp3 = audio_utils.speak(bob_voice, bob_response, f"bob-{n}")
+            audio_utils.play_mp3(bob_mp3)
+
+            # Send Bob's response to Alice
+            talk_tcp.talk_send(client_socket, bob_response)
+
+        except Exception as e:
+            print(f"Error: {e}", file=sys.stderr)
             break
-
-        # Log Alice's message
-        with open(xml_log, "a") as f:
-            f.write(f"  <alice>{alice_message}</alice>\n")
-
-        # Update context with Alice's message
-        context += f"Alice: {alice_message}\n"
-
-        # Generate Bob's response using LLM
-        print("Bob: Thinking...")
-        bob_response = query_llm(context)
-
-        # Update context with Bob's response
-        context += bob_response
-
-        # Log Bob's response
-        with open(xml_log, "a") as f:
-            f.write(f"  <bob>{bob_response}</bob>\n")
-
-        print(f"Bob: {bob_response}")
-
-        # Generate speech for Bob
-        n += 1
-        bob_mp3 = audio_utils.speak(bob_voice, bob_response, f"bob-{n}")
-        audio_utils.play_mp3(bob_mp3)
-
-        # Send Bob's response to Alice
-        talk_tcp.talk_send(client_socket, bob_response)
 
     # Close sockets
     talk_tcp.talk_close(client_socket)
