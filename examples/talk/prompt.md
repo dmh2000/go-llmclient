@@ -34,3 +34,17 @@ review this specification and let me know if you see any problems. do not create
 3. message flow: in a loop, bob will first receive a message from Alice, generate a response and then send it back to Alice. if the client closes the socket, break out of the loop
 4. if any errors are detected at any point, print an error message and exit the program
 5. after the client disconnects, exit the program. the bob server will only handle a single connection
+
+I want to create a web app as follows:
+
+1. intitialize a vanilla vite app with typescript. the app will be located in the directory examples/talk/alice
+2. the front end will show the name 'Alice'. it will open a websocket connection to the backend. the backend will occasionally send the url of an mp3 file on the websocket connection. the front end will play the mp3 file when it receives it from the backend.
+3. the backend will use the node f.watch function for a specific file name and when the file is created or changed it will send the url of the mp3 file to the front end via the websocket connection. the mp3 file will be in the same directory as the index.html file.
+
+I want to create another web app as follows:
+
+1. intitialize a vanilla vite app with typescript. the app will be located in the directory examples/talk/bob.
+2. the front end will show the name 'Bob. it will open a websocket connection to the backend.
+3. this app is almost identical to the alice app, except that when it starts, instead of a start button, it will show the name 'Bob' and a text box and a submit button. when the user enters text in the text box and submits it, the text will be sent to the backend via the websocket connection. the backend will send a response. create a placeholder function for the text response from the websocket. I will fill it in later.
+4. the backend will occasionally send the url of an mp3 file on the websocket connection. the front end will play the mp3 file when it receives it from the backend.
+5. the backend will use the node f.watch function for a specific file name and when the file is created or changed it will send the url of the mp3 file to the front end via the websocket connection. the mp3 file will be in the same directory as the index.html file.

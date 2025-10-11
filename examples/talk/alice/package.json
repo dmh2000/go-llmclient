@@ -1,0 +1,21 @@
+{
+  "name": "alice",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "server": "node server.js"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.3",
+    "vite": "^7.1.7"
+  },
+  "dependencies": {
+    "@types/node": "^24.7.1",
+    "@types/ws": "^8.18.1",
+    "ws": "^8.18.3"
+  }
+}
