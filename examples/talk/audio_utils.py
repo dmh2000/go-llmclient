@@ -4,6 +4,7 @@ import sys
 import os
 import subprocess
 import wave
+import traceback
 from google import genai
 from google.genai import types
 from pydub import AudioSegment
@@ -18,36 +19,45 @@ def wave_file(filename, pcm, channels=1, rate=24000, sample_width=2):
         wf.writeframes(pcm)
 
 
-def speak(voice, text, file_number):
+def speak(voice, text, filename):
     """Generate speech from text using Google Gemini TTS API and save as MP3."""
-    try:
-        client = genai.Client(api_key=os.environ.get("GOOGLE_API_KEY"))
 
-        response = client.models.generate_content(
-            model="gemini-2.5-flash-preview-tts",
-            contents=text,
-            config=types.GenerateContentConfig(
-                response_modalities=["AUDIO"],
-                speech_config=types.SpeechConfig(
-                    voice_config=types.VoiceConfig(
-                        prebuilt_voice_config=types.PrebuiltVoiceConfig(
-                            voice_name=voice,
+    for i in range(3):
+        try:
+            client = genai.Client(api_key=os.environ.get("GOOGLE_API_KEY"))
+
+            response = client.models.generate_content(
+                model="gemini-2.5-flash-preview-tts",
+                contents=text,
+                config=types.GenerateContentConfig(
+                    response_modalities=["AUDIO"],
+                    speech_config=types.SpeechConfig(
+                        voice_config=types.VoiceConfig(
+                            prebuilt_voice_config=types.PrebuiltVoiceConfig(
+                                voice_name=voice,
+                            )
                         )
-                    )
+                    ),
                 ),
-            ),
-        )
+            )
 
-        data = response.candidates[0].content.parts[0].inline_data.data
+            data = response.candidates[0].content.parts[0].inline_data.data
 
-        file_name = f"out-{file_number}.mp3"
-        pcm_to_mp3(data, file_name)
+            file_name = f"{filename}.mp3"
+            pcm_to_mp3(data, file_name)
 
-        return file_name
+            return file_name
 
-    except Exception as e:
-        print(f"Error in speak: {e}", file=sys.stderr)
-        sys.exit(1)
+        except Exception as e:
+            print(f"Error in speak: {e}", file=sys.stderr)
+            tb = traceback.extract_tb(e.__traceback__)
+            filename, lineno, funcname, text = tb[-1]
+            print(f"Exception type: {type(e).__name__}")
+            print(f"File: {filename}")
+            print(f"Line number: {lineno}")
+            print(f"Error message: {e}")
+            print(f"Line of code: {text}")
+    sys.exit(1)
 
 
 def play_wave(wav_file):
@@ -98,7 +108,7 @@ def pcm_to_mp3(pcm_data, output_filename, channels=1, sample_width=2, frame_rate
             data=pcm_data,
             sample_width=sample_width,
             frame_rate=frame_rate,
-            channels=channels
+            channels=channels,
         )
 
         # Export as MP3

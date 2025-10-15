@@ -2,7 +2,7 @@
 import sys
 import subprocess
 import talk_tcp
-import audio_utils
+import examples.talk.audio_utils as audio_utils
 
 model = "claude-3-5-haiku-20241022"
 bob_voice = "enceladus"
@@ -99,7 +99,7 @@ def main():
 
             # Generate speech for Bob
             n += 1
-            bob_mp3 = audio_utils.speak(bob_voice, bob_response, f"bob-{n}")
+            bob_mp3 = audio_utils.speak(bob_voice, bob_response, f"audio")
             audio_utils.play_mp3(bob_mp3)
 
             # Send Bob's response to Alice

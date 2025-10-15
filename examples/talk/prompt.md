@@ -45,6 +45,19 @@ I want to create another web app as follows:
 
 1. intitialize a vanilla vite app with typescript. the app will be located in the directory examples/talk/bob.
 2. the front end will show the name 'Bob. it will open a websocket connection to the backend.
-3. this app is almost identical to the alice app, except that when it starts, instead of a start button, it will show the name 'Bob' and a text box and a submit button. when the user enters text in the text box and submits it, the text will be sent to the backend via the websocket connection. the backend will send a response. create a placeholder function for the text response from the websocket. I will fill it in later.
+3. this app is almost identical to the alice app, except that when it starts, instead of a start button, it will show the name 'Bob' and a text box and a submit button. when the user enters text in the text box and submits it, the text will be posted to an endpoint on the backend . create a placeholder function to receive the post. I will fill it in later. once the text is posted, continue in the same way the Alice app works.
 4. the backend will occasionally send the url of an mp3 file on the websocket connection. the front end will play the mp3 file when it receives it from the backend.
-5. the backend will use the node f.watch function for a specific file name and when the file is created or changed it will send the url of the mp3 file to the front end via the websocket connection. the mp3 file will be in the same directory as the index.html file.
+5. the backend will use the node f.watch function for a specific file name and when the file is created or changed it will send the url of the mp3 file to the front end via the websocket connection. the mp3 file will be in the same directory as the index.html
+
+modify make-mp3.py to do the following
+
+1. create a python web server that does the following:
+
+- receives command line arguments for the port number and output file path
+- start a tcp server on the specified port
+- wait for a client connection
+- in a loop:
+  - wait for message from the client
+  - when a message is received. use the talk_tcp and audio_utils modules to generate an mp3 file from the message
+  - write the mp3 file to the specified output file path
+    save the python file in the file examples/talk/make-mp3.py

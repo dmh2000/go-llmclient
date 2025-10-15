@@ -1,4 +1,8 @@
-import './style.css'
+import './style.css';
+
+// Constants
+const WS_PORT = 9002;
+const HTTP_PORT = 9003;
 
 // WebSocket connection
 let ws: WebSocket;
@@ -6,7 +10,7 @@ let audio: HTMLAudioElement | null = null;
 let isStarted = false;
 
 function connectWebSocket() {
-  const wsUrl = `ws://${window.location.hostname}:8081`;
+  const wsUrl = `ws://${window.location.hostname}:${WS_PORT}`;
   ws = new WebSocket(wsUrl);
 
   ws.onopen = () => {
@@ -45,6 +49,7 @@ function playAudio(url: string) {
   }
 
   // Create new audio element and play
+  console.log('Playing audio:', url);
   audio = new Audio(url);
 
   // Show playing indicator when audio starts
@@ -132,7 +137,7 @@ async function handleSubmit(event: Event) {
 
   try {
     // Post text to backend endpoint
-    const response = await fetch(`http://${window.location.hostname}:5174/submit`, {
+    const response = await fetch(`http://${window.location.hostname}:${HTTP_PORT}/submit`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -193,7 +198,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
       </div>
     </div>
   </div>
-`
+`;
 
 // Attach event listener to form
 const form = document.querySelector<HTMLFormElement>('#text-form');

@@ -2,7 +2,7 @@
 import sys
 import subprocess
 import talk_tcp
-import audio_utils
+import examples.talk.audio_utils as audio_utils
 
 model = "claude-3-5-haiku-20241022"
 alice_voice = "vindemiatrix"
@@ -68,7 +68,7 @@ def main():
 
     # Play initial greeting
     print(f"alice: {initial_greeting}")
-    initial_mp3 = audio_utils.speak(alice_voice, initial_greeting, "alice-initial")
+    initial_mp3 = audio_utils.speak(alice_voice, initial_greeting, "audio")
     audio_utils.play_mp3(initial_mp3)
 
     # create a TCP client here with IP 127.0.0.1 and port 9000

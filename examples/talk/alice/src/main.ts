@@ -1,12 +1,14 @@
-import './style.css'
+import './style.css';
 
 // WebSocket connection
 let ws: WebSocket;
 let audio: HTMLAudioElement | null = null;
 let isStarted = false;
+let WS_PORT = 8002;
+
 
 function connectWebSocket() {
-  const wsUrl = `ws://${window.location.hostname}:8080`;
+  const wsUrl = `ws://${window.location.hostname}:${WS_PORT}`;
   ws = new WebSocket(wsUrl);
 
   ws.onopen = () => {
@@ -45,6 +47,7 @@ function playAudio(url: string) {
   }
 
   // Create new audio element and play
+  console.log('Playing audio:', url);
   audio = new Audio(url);
 
   // Show playing indicator when audio starts
@@ -144,7 +147,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
       </div>
     </div>
   </div>
-`
+`;
 
 // Attach event listener to start button
 const startButton = document.querySelector<HTMLButtonElement>('#start-button');
