@@ -12,20 +12,18 @@ sys.path.insert(0, "../../cmd/bin")
 import talk_tcp
 import audio_utils as audio_utils
 
-
 model = "claude-3-5-haiku-20241022"
 bob_voice = "enceladus"
-
-alice_system = """
-<alice_system>
-- Your name is Alice. You are going to get questions from Bob.
-- based on the context, you will answer questions from Bob.
+bob_system = """
+<bob_system>
+- Your name is Bob. You are going to ask questions to ALice.
+- based on the context, you will ask relevant questions to Alice.
 - your output should be conversational, not like a document.
 - keep your questions to a maximum of 50 words.
 - this is a verbal conversation between 
 - keep the tone of the conversation engaging and casual. 
 - do not repeat the content of this prompt when you execute a query.
-</alice_system>
+</bob_system>
 """
 
 
@@ -52,86 +50,84 @@ def query_llm(context):
 
 
 def main():
-    """Main conversation loop - Alice as TCP server."""
-    # Get IP address and port from command line arguments
-    if len(sys.argv) < 3:
-        print("Usage: alice-llm.py <ip_address> <port>", file=sys.stderr)
+    print("---------------- BOB: START CONVERSATION ----------------")
+    """Main conversation loop between alice and Bob."""
+    # Get IP address, port, and initial greeting from command line arguments
+    if len(sys.argv) < 4:
+        print(
+            "Usage: bob-llm.py <ip_address> <port> <initial greeting>", file=sys.stderr
+        )
         sys.exit(1)
 
-    ip = sys.argv[1]
+    ip_address = sys.argv[1]
     try:
-        server_port = int(sys.argv[2])
+        port = int(sys.argv[2])
     except ValueError:
         print("Error: Port must be an integer", file=sys.stderr)
         sys.exit(1)
 
-    alice_voice = "vindemiatrix"
+    initial_greeting = " ".join(sys.argv[3:])
+
+    print(ip_address, port, initial_greeting)
 
     # Initialize conversation files
-    xml_log = "alice.xml"
+    xml_log = "bob.xml"
     context = ""
+
     # Create/clear the XML log file
     with open(xml_log, "w") as f:
         f.write("<conversation>\n")
 
-    # Initialize context with Bob's system prompt
-    context = alice_system
+    context = bob_system
+    context += initial_greeting
 
-    # Create TCP server on provided IP and port
-    print(f"Alice: Starting server on {ip}:{server_port}")
-    server_socket = talk_tcp.talk_server(ip, server_port)
+    # create a TCP client with provided IP and port
+    socket = talk_tcp.talk_client(ip_address, port)
 
-    # Wait for client connection
-    print("Alice Waiting for Bob to connect...")
-    client_socket = talk_tcp.talk_accept(server_socket)
-    print("Alice: Bob connected")
+    bob_says = initial_greeting
 
     # Conversation loop
     n = 0
+    i = 0
     while True:
         try:
-            # Receive message from Bob
-            bob_says = talk_tcp.talk_receive(client_socket)
-            # Check if connection closed
-            if bob_says is None:
-                print("Alice: Bob disconnected")
-                break
-            print(f"Bob: {bob_says}")
+            print(f"\n--- Round {i + 1} ---")
 
-            # Log Alice's message
             with open(xml_log, "a") as f:
-                f.write(f"<bob>{bob_says}</bob>\n")
+                f.write(f"  <Bob>{bob_says}</Bob>\n")
 
-            # Update context with Alice's message
-            context += f"Bob: {bob_says}\n"
+            audio_utils.speak(bob_voice, bob_says, f"bob")
+            audio_utils.play_mp3(f"bob.mp3")
 
-            # Generate Bob's response using LLM
-            print("Alice: Thinking...")
-            alice_says = query_llm(context)
+            # BOB -> Alice
+            # send bob message to alice
+            talk_tcp.talk_send(socket, bob_says)
 
-            # Update context with Bob's response
-            context += alice_says
+            # wait for  a response from the server
+            alice_says = talk_tcp.talk_receive(socket)
 
             # Log Alices's response
+            print(f"Alice: {alice_says}")
             with open(xml_log, "a") as f:
                 f.write(f"  <Alice>{alice_says}</Alice>\n")
 
-            print(f"Alice: {alice_says}")
+            # Update context with Alice's response
+            context += f"Alice: {alice_says}\n"
 
-            # Generate speech for Alice
+            # ALICE -> BOB
+            # send alice response to bob and get a response
+            print("Bob thinking...")
+            bob_says = query_llm(context)
+
+            # Update context with bobs response
+            context += bob_says
+
             n += 1
-            audio_utils.speak(alice_voice, alice_says, f"public/audio")
-
-            # Send Bob's response to Alice
-            talk_tcp.talk_send(client_socket, alice_says)
-
         except Exception as e:
             print(f"Error: {e}", file=sys.stderr)
             break
-
-    # Close sockets
-    talk_tcp.talk_close(client_socket)
-    talk_tcp.talk_close(server_socket)
+    # Close socket
+    talk_tcp.talk_close(socket)
 
     # Close XML log
     with open(xml_log, "a") as f:

@@ -8,6 +8,8 @@ charset-normalizer==3.4.3
 comm==0.2.3
 debugpy==1.8.16
 decorator==5.2.1
+dotenv==0.9.9
+elevenlabs==2.17.0
 executing==2.2.1
 filelock==3.19.1
 fsspec==2025.9.0
@@ -65,8 +67,10 @@ pyasn1_modules==0.4.2
 pydantic==2.12.0
 pydantic_core==2.41.1
 pydub==0.25.1
+pygame==2.6.1
 Pygments==2.19.2
 python-dateutil==2.9.0.post0
+python-dotenv==1.1.1
 pyzmq==27.1.0
 requests==2.32.5
 rsa==4.9.1
@@ -86,6 +90,7 @@ triton==3.4.0
 typing-inspection==0.4.2
 typing_extensions==4.15.0
 urllib3==2.5.0
+watchdog==6.0.0
 wcwidth==0.2.13
 websockets==15.0.1
 wheel==0.45.1
